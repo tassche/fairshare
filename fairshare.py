@@ -767,8 +767,8 @@ def list_expenses():
     headings = {'id': 'ID', 'date': 'Date', 'title': 'Expense', 'payer': 
                 'Payer', 'cost': 'Cost', 'debtors': 'Debtors',}
     header = '{id:3} {date:8} {title:15} {payer:10} {cost:6} {debtors:32}'
-    entry = ('{id:3} {date:8} {title:15} {payer:10} {cost:6} {debtors:14} '
-             '{share:5} >> {payer:8}')
+    entry = ('{id:3} {date:8} {title:15} {payer:10} {cost:6.2f} {debtors:14} '
+             '{share:6.2f} >> {payer:7}')
     print(header.format(**headings))
     connection = sqlite3.connect(database)
     cursor = connection.cursor()
@@ -798,7 +798,8 @@ def status():
     cursor = connection.cursor()
     status = get_status_list(cursor)
     for payer, receiver, amount in status:
-        print(payer, '>>', receiver, amount)
+        print('{payer} >> {receiver}   {amount:.2f}'
+              .format(payer=payer, receiver=receiver, amount=amount))
     connection.close()
 
 
@@ -807,7 +808,8 @@ def settle():
     cursor = connection.cursor()
     status = get_status_list(cursor)
     for payer, receiver, amount in status:
-        print(payer, '>>', receiver, amount)
+        print('{payer} >> {receiver}   {amount:.2f}'
+              .format(payer=payer, receiver=receiver, amount=amount))
     if confirm('Settle?', default_y=False):
         settle_expenses(cursor)
         connection.commit()
